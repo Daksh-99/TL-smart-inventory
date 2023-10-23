@@ -1,0 +1,41 @@
+{% comment %} <!DOCTYPE html>
+<html>
+  <head>
+    <title>Student Items</title>
+  </head>
+  <body>
+    <h1>Your Borrowed Items</h1>
+    <ul>
+      {% for item in borrowed_items %}
+      <li>{{ item.item }}</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
+{% endcomment %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Student Items</title>
+  </head>
+  <body>
+    <h1>Your Borrowed Items</h1>
+    <ul>
+      {% for item in borrowed_items %}
+      <li>
+        {{ item.item }}
+        <form
+          method="post"
+          onsubmit="return confirm('Are you sure you want to submit this item?');"
+        >
+          {% csrf_token %}
+          <input type="hidden" name="submit_item" value="{{ item.id }}" />
+          <button type="submit" class="submit-button">Submit Item</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
+

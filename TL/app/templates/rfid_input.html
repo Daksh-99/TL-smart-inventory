@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RFID Input</title>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Get a reference to the input field
+        const rfidInput = document.getElementById("rfid_tag");
+
+        // Set focus on the input field
+        rfidInput.focus();
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const rfidInput = document.getElementById("rfid_tag");
+        const rfidForm = document.getElementById("rfid_form");
+
+        rfidInput.addEventListener("input", function () {
+          if (rfidInput.value.length === 10) {
+            rfidForm.submit();
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Welcome to the RFID Scanner</h1>
+    <form id="rfid_form" action="{% url 'process_rfid_tag' %}" method="post">
+      {%csrf_token%}
+      <p>Enter your RFID tag (10 digits):</p>
+      <input
+        type="text"
+        name="rfid_tag"
+        id="rfid_tag"
+        placeholder="Enter RFID Tag"
+        maxlength="10"
+      />
+    </form>
+  </body>
+</html>

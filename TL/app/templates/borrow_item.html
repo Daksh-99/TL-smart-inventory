@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Borrow Item</title>
+</head>
+<body>
+    <h1>Borrow Item</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% comment %} <label for="rfid_tag">RFID Tag:</label>
+        <input type="text" name="rfid_tag" required><br> {% endcomment %}
+        <label for="item_name">Item Name:</label>
+        <input type="text" name="item_name" required><br>
+        <input type="submit" value="Borrow">
+    </form>
+</body>
+</html>

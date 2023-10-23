@@ -1,0 +1,85 @@
+ {% comment %} <!DOCTYPE html>
+<html>
+  <head>
+    <title>RFID Scanner</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <h1>Welcome, <span id="student_name">{{student.name}}</span></h1>
+
+    <p>Scanned RFID Tag: <span id="rfid_tag"></span></p>
+
+    <!-- Add a button to trigger RFID scanning -->
+    <button id="startScanButton">Start RFID Scan</button>
+
+    <a href="{% url 'borrow_item' %}">Borrow Item</a><br />
+    <a href="{% url 'student_items' %}">Submit Item</a>
+
+    <script>
+      $(document).ready(function () {
+        async function scanRFID() {
+          try {
+            const port = await navigator.serial.requestPort();
+            await port.open({ baudRate: 9600 });
+
+            const reader = port.readable.getReader();
+            while (true) {
+              const { value, done } = await reader.read();
+              if (done) break;
+
+              const rfidTag = new TextDecoder().decode(value);
+              document.getElementById("rfid_tag").textContent = rfidTag;
+
+              // Perform an AJAX request to send the RFID tag to the server
+              $.ajax({
+                type: "POST",
+                url: "http://localhost:8000/", // Replace with the actual URL
+                data: { rfid_tag: rfidTag },
+                success: function (data) {
+                  if (data.success) {
+                    // RFID tag found, update the page content
+                    document.getElementById("rfid_tag").textContent = rfidTag; // Update RFID tag
+                    document.getElementById("student_name").textContent =
+                      data.student.name; // Update student name
+                  } else {
+                    // RFID tag not found, handle this case
+                    console.log("No RFID tag found");
+                  }
+                },
+                error: function () {
+                  // Handle errors here
+                  console.log("Failed to send RFID tag");
+                },
+              });
+            }
+
+            await port.close();
+          } catch (error) {
+            console.error(`Error: ${error}`);
+          }
+        }
+
+        // Call the scanRFID function when the "Start RFID Scan" button is clicked
+        document
+          .getElementById("startScanButton")
+          .addEventListener("click", function () {
+            scanRFID();
+          });
+      });
+    </script>
+  </body>
+</html> {% endcomment %}
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Home</title>
+  </head>
+  <body>
+    <h1>Welcome, <span id="student_name">{{student.name}}</span></h1>
+
+    <a href="{% url 'borrow_item' %}">Borrow Item</a><br />
+    <a href="{% url 'student_items' %}">Submit Item</a>
+  </body>
+</html>
