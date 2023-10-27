@@ -18,24 +18,74 @@
 <html>
   <head>
     <title>Student Items</title>
+    <style>
+      body {
+        background-color: #f4f4f4; /* Set body background color */
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+      }
+      
+      .container {
+        text-align: center;
+        background-color: #fff; /* Set container background color to white */
+        padding: 20px; /* Add some padding for content inside container */
+        border-radius: 15px; /* Rounded corners */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Shadow */
+      }
+      
+      .item-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .item {
+        margin: 10px 0;
+        font-size: 24px; /* Increased font size for items */
+      }
+      
+      .submit-button {
+        background-color: #28a745; /* Green Color */
+        color: #fff;
+        border: none;
+        padding: 10px 20px; /* Original padding for buttons */
+        cursor: pointer;
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Shadow */
+        font-family: 'Arial', sans-serif; /* Specify a font */
+        font-size: 20px; /* Original font size for buttons */
+      }
+      
+      .submit-button:hover {
+        background-color: #218838; /* Darker green on hover */
+      }
+      
+    </style>
   </head>
   <body>
-    <h1>Your Borrowed Items</h1>
-    <ul>
-      {% for item in borrowed_items %}
-      <li>
-        {{ item.item }}
-        <form
-          method="post"
-          onsubmit="return confirm('Are you sure you want to submit this item?');"
-        >
-          {% csrf_token %}
-          <input type="hidden" name="submit_item" value="{{ item.id }}" />
-          <button type="submit" class="submit-button">Submit Item</button>
-        </form>
-      </li>
-      {% endfor %}
-    </ul>
+    <div class="container">
+      <h1>Your Borrowed Items</h1>
+      <ul class="item-list">
+        {% for item in borrowed_items %}
+          <li class="item">
+            {{ item.item }}
+            <form method="post" onsubmit="return confirm('Are you sure you want to submit this item?');">
+              {% csrf_token %}
+              <input type="hidden" name="submit_item" value="{{ item.id }}" />
+              <button type="submit" class="submit-button">Submit Item</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
   </body>
 </html>
 
