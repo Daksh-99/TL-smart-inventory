@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>New Item</title>
+    <style>
+      body {
+        background-color: #000;
+        color: #fff;
+        font-family: "Poppins", sans-serif;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      .container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      label {
+        display: block;
+        margin-top: 10px;
+      }
+
+      input[type="text"],
+      input[type="number"] {
+        height: 4vh;
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 15px;
+        background-color: #fff;
+        color: #000;
+        border: 1px solid #000;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      input[type="submit"] {
+        background-color: #000;
+        color: #fff;
+        border: 2px solid #fff;
+        padding: 10px 20px;
+        margin-top: 20px;
+        cursor: pointer;
+        text-size: 1.2rem;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #fff;
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>New Item</h1>
+      <form method="post">
+        {% csrf_token %}
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" required />
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" id="quantity" required />
+
+        <input type="submit" value="Create Item" />
+      </form>
+    </div>
+  </body>
+</html>

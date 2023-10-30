@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 import csv
+from django.contrib.admin.views.decorators import staff_member_required
 
 #admin views
 
@@ -19,6 +20,15 @@ def export_items_csv(request):
         Item.objects.get_or_create(name=item_name, quantity=quantity)
     return redirect('get_item_names')
 
+def newitem(request):
+    if request.method == "POST":
+        name = request.POST['name']
+        quantity = request.POST['quantity']
+        Item.objects.create(name=name, quantity=quantity)
+        return redirect('itemlist')
+    return render(request, 'newitem.html')
+
+@staff_member_required
 def itemlist(request):
     items = Item.objects.all()
 
@@ -42,6 +52,8 @@ def get_item_names(request):
 
 
 def process_rfid_tag(request):
+    if 'active_student_id' in request.session:
+        del request.session['active_student_id']    
     rfid_tag = request.POST.get('rfid_tag',"")
     request.session['active_student_id'] = rfid_tag
 
@@ -90,6 +102,7 @@ def borrow_item(request):
         
         BorrowRecord.objects.create(user=student, item=item)
         #end user session
+
         
         return redirect('home')
     
