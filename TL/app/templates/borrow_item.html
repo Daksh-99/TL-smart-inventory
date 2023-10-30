@@ -1,49 +1,88 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Borrow Item</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        const itemInput = $("#item_name");
+        const datalist = $("#item_names");
+
+        itemInput.on("input", function () {
+          const inputText = itemInput.val();
+          datalist.empty();
+
+          $.ajax({
+            url: "http://127.0.0.1:8000/item_names/",
+            type: "GET",
+            success: function (data) {
+              data.forEach(function (item) {
+                if (item.toLowerCase().includes(inputText.toLowerCase())) {
+                  datalist.append(`<option value="${item}">`);
+                }
+              });
+            },
+          });
+        });
+
+        $("form").submit(function (event) {
+          const selectedValue = itemInput.val();
+          const availableOptions = datalist.find("option");
+
+          if (
+            !availableOptions
+              .toArray()
+              .some((option) => option.value === selectedValue)
+          ) {
+            alert("Please select an item from the list.");
+            event.preventDefault();
+          }
+        });
+      });
+    </script>
+
     <style>
       body {
-        font-family: 'Arial', sans-serif;
+        font-family: "Arial", sans-serif;
         background-color: #f4f4f4;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
         margin: 0;
-        flex-direction: column; /* Set flex direction to column */
+        flex-direction: column;
       }
-      
+
       form {
         background-color: #fff;
         padding: 30px;
         border-radius: 10px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        max-width: 600px; /* Increased form width */
-        width: 100%; /* Added to make form full width */
+        max-width: 600px;
+        width: 100%;
       }
-      
+
       h1 {
         text-align: center;
-        margin-bottom: 20px; /* Add margin below heading */
+        margin-bottom: 20px;
       }
-      
+
       label {
         font-weight: bold;
-        display: block; /* Make labels block elements */
-        margin-bottom: 5px; /* Add margin below labels */
+        display: block;
+        margin-bottom: 5px;
       }
-      
-      input[type="text"] {
-        width: 100%; /* Make input field full width */
-        padding: 12px; /* Increase padding for a bigger text box */
+
+      input[name="item_name"] {
+        width: 100%;
+        padding: 12px;
         margin-bottom: 10px;
         border: 1px solid #ccc;
         border-radius: 4px;
         box-sizing: border-box;
-        font-size: 1em; /* Adjust font size */
+        font-size: 1em;
       }
-      
+
       input[type="submit"] {
         background-color: #007bff;
         color: #fff;
@@ -51,24 +90,25 @@
         padding: 10px 20px;
         cursor: pointer;
         border-radius: 6px;
-        width: 100%; /* Make button fill the container */
+        font-size: 1.2em;
+        width: 100%;
       }
-      
+
       input[type="submit"]:hover {
         background-color: #0056b3;
       }
-        
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Borrow Item</h1>
     <form method="post">
-        {% csrf_token %}
-        {% comment %} <label for="rfid_tag">RFID Tag:</label>
-        <input type="text" name="rfid_tag" required><br> {% endcomment %}
-        <label for="item_name">Item Name:</label>
-        <input type="text" name="item_name" required><br>
-        <input type="submit" value="Borrow">
+      {% csrf_token %}
+      <label for="item_name">Item Name:</label>
+      <input list="item_names" name="item_name" id="item_name" required />
+      <datalist id="item_names">
+        <!-- Add options dynamically using JavaScript -->
+      </datalist>
+      <input type="submit" value="Borrow" />
     </form>
-</body>
+  </body>
 </html>

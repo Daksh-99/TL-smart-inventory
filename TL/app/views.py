@@ -6,22 +6,52 @@ from django.contrib import messages
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
+import csv
+
+#admin views
+
+def export_items_csv(request):
+    data = csv.reader(open('C:\\Users\\daksh\\Downloads\\Inventory_Mapping_Main.csv'), delimiter=",")
+    for row in data:
+        item_name = row[0]
+        quantity = row[1]
+        print(item_name, quantity)
+        Item.objects.get_or_create(name=item_name, quantity=quantity)
+    return redirect('get_item_names')
+
+def itemlist(request):
+    items = Item.objects.all()
+
+    if request.method == "POST":
+        ids = request.POST['id']
+        name = request.POST['name']
+        quantity = request.POST['quantity']
+        item = Item.objects.get(id=ids)
+        item.name = name
+        item.quantity = quantity
+        item.save()
+        return redirect('itemlist')     
+
+    return render(request, 'itemlist.html', {'items': items})
+
+
+def get_item_names(request):
+    items = Item.objects.all().values_list('name', flat=True)
+    items = list(items)
+    return JsonResponse(items, safe=False)
 
 
 def process_rfid_tag(request):
     rfid_tag = request.POST.get('rfid_tag',"")
-    print(rfid_tag)
     request.session['active_student_id'] = rfid_tag
 
     if rfid_tag and len(rfid_tag) == 10:
-        # Check if the user with the provided RFID tag exists
         try:
             student = studentUser.objects.get(rfid=rfid_tag)
             return render(request, 'home.html', {'student': student})
         except studentUser.DoesNotExist:
             return redirect('register_student')
 
-    # Invalid RFID tag or tag not provided, return to the RFID input page
     return render(request, 'rfid_input.html')
 
 
@@ -37,7 +67,6 @@ def home(request):
         except studentUser.DoesNotExist:
             pass
 
-    print("No RFID tag found")
     return render(request, 'home.html')
 
 
@@ -57,35 +86,14 @@ def borrow_item(request):
         rfid_tag = request.session.get('active_student_id')
         student = studentUser.objects.get(rfid=rfid_tag)
         item_name = request.POST.get('item_name')
+        item = Item.objects.get(name=item_name)
         
-        BorrowRecord.objects.create(user=student, item=item_name)
+        BorrowRecord.objects.create(user=student, item=item)
         #end user session
         
         return redirect('home')
     
     return render(request, 'borrow_item.html')
-
-def return_item(request, student_id):
-    student = studentUser.objects.get(rfid=student_id)
-    borrowed_items = BorrowRecord.objects.filter(user = student, returned=False)
-    
-    if request.method == 'POST':
-        selected_items = request.POST.getlist('selected_items')
-        BorrowRecord.objects.filter(id__in=selected_items).update(returned=True)
-        
-        return redirect('return_item', student_id=student_id)
-    
-    return render(request, 'return_item.html', {'borrowed_items': borrowed_items})
-
-# def student_items(request):
-#     rfid_tag = request.session.get('active_student_id')
-#     student = studentUser.objects.get(rfid=rfid_tag)
-#     borrowed_items = BorrowRecord.objects.filter(user= student, returned=False)
-#     return render(request, 'student_items.html', {'borrowed_items': borrowed_items})
-
-from django.shortcuts import render, redirect
-
-# ... your other imports ...
 
 def student_items(request):
     rfid_tag = request.session.get('active_student_id')

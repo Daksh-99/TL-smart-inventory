@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Item List</title>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        font-weight: bold;
+        font-style: normal;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        background-color: #0074d9;
+        color: white;
+        padding: 10px;
+        text-align: center;
+      }
+
+      ul {
+        list-style-type: none;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+      }
+
+      li {
+        background-color: #fff;
+        margin: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        width: 60em;
+      }
+
+      .item {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+      }
+
+      .name,
+      .quantity {
+        text-align: center;
+        align-items: center;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      .buttons {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .edit,
+      .save {
+        background-color: #0074d9;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+        padding: 15px;
+      }
+
+      .save {
+        background-color: #28a745; /* Green color for the Save button */
+        display: none; /* Hide the Save button by default */
+      }
+      input {
+        text-align: center;
+        padding: 5px;
+        width: 60%;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Available Items</h1>
+    <form method="post">
+      {%csrf_token%}
+      <ul>
+        {% for item in items %}
+        <li>
+          <div class="item" data-item-id="{{ item.id }}">
+            <span class="name">{{ item.name }}</span>
+            <span class="quantity">
+              {% if item.quantity >= 0 %} {{ item.quantity }} {% else %}
+              Unlimited {% endif %}
+            </span>
+            <span class="buttons">
+              <button class="edit" type="button" onclick="editfunc(this)">
+                Edit
+              </button>
+              <button
+                class="save"
+                style="display: none"
+                type="button"
+                onclick="savefunc(this)"
+              >
+                Save
+              </button>
+            </span>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </form>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>
+      function editfunc(button) {
+        const itemElement = button.closest(".item");
+        const nameElement = itemElement.querySelector(".name");
+        const quantityElement = itemElement.querySelector(".quantity");
+
+        const nameValue = nameElement.textContent;
+        let quantityValue = parseInt(quantityElement.textContent);
+        if (isNaN(quantityValue)) {
+          quantityValue = -1;
+        }
+        nameElement.innerHTML = `<input type="text" value="${nameValue}" name="edited_name">`;
+        quantityElement.innerHTML = `<input type="number" value="${quantityValue}" name="edited_quantity">`;
+
+        button.style.display = "none";
+        itemElement.querySelector(".save").style.display = "inline";
+      }
+
+      function savefunc(button) {
+        const itemElement = button.closest(".item");
+        const nameElement = itemElement.querySelector(".name");
+        const quantityElement = itemElement.querySelector(".quantity");
+        const id = itemElement.dataset.itemId;
+        const nameValue = nameElement.querySelector("input").value;
+        const quantityValue = quantityElement.querySelector("input").value;
+        const csrfToken = document.querySelector(
+          "[name=csrfmiddlewaretoken]"
+        ).value;
+
+        $.ajax({
+          url: `http://127.0.0.1:8000/itemlist/`,
+          method: "post",
+          data: {
+            csrfmiddlewaretoken: csrfToken, // Include the CSRF token
+            id: id,
+            name: nameValue,
+            quantity: quantityValue,
+          },
+          success: function (response) {
+            console.log("success");
+            nameElement.innerHTML = nameValue;
+            quantityElement.innerHTML = quantityValue;
+            button.style.display = "none";
+            itemElement.querySelector(".edit").style.display = "inline";
+          },
+          error: function (response) {
+            console.log("error");
+            alert("Error updating item");
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

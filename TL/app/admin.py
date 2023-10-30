@@ -4,3 +4,4 @@ from .models import *
 
 admin.site.register(studentUser)
 admin.site.register(BorrowRecord)
+admin.site.register(Item)
