@@ -1,4 +1,4 @@
- {% comment %} <!DOCTYPE html>
+{% comment %} <!DOCTYPE html>
 <html>
   <head>
     <title>RFID Scanner</title>
@@ -68,8 +68,8 @@
       });
     </script>
   </body>
-</html> {% endcomment %}
-
+</html>
+{% endcomment %}
 
 <!DOCTYPE html>
 <html>
@@ -85,7 +85,7 @@
         margin: 0;
         font-family: Arial, sans-serif;
       }
-      
+
       .container {
         text-align: center;
         background-color: #fff;
@@ -95,44 +95,40 @@
         border-radius: 15px; /* Add rounded corners */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a shadow effect */
       }
-      
-      
+
       h1 {
         font-size: 2em;
         margin-bottom: 20px;
       }
-      
+
       .links {
         display: flex;
         flex-direction: column;
+        font-size: 1.2em;
       }
-      
+
       a {
         text-decoration: none;
         color: #333;
         font-size: 1.2em;
         margin-bottom: 10px;
         transition: color 0.3s; /* Add transition for color change */
-
       }
-      
+
       a:hover {
         text-decoration: underline;
         color: #777; /* Change color on hover */
-
       }
-      
     </style>
   </head>
   <body>
     <div class="container">
       <h1>Welcome, <span id="student_name">{{student.name}}</span></h1>
-      
+
       <div class="links">
-        <a href="{% url 'borrow_item' %}">Borrow Item</a><br />
-        <a href="{% url 'student_items' %}">Submit Item</a>
+        <a class="button" href="{% url 'borrow_item' %}">Borrow Item</a><br />
+        <a class="button" href="{% url 'student_items' %}">Submit Item</a>
       </div>
     </div>
   </body>
-  
 </html>

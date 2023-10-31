@@ -69,17 +69,20 @@ def process_rfid_tag(request):
 
 @csrf_exempt
 def home(request):
-    rfid_tag = request.POST.get('rfid_tag') or None
+    if 'active_student_id' in request.session:
+        rfid_tag = request.session['active_student_id']
+    else:
+        rfid_tag = request.POST.get('rfid_tag') or None
     student = None
     if rfid_tag is not None:
         try:
             student = studentUser.objects.get(rfid=rfid_tag)
             request.session['active_student_id'] = rfid_tag
-            return JsonResponse({'success': True, 'has_rfid_data': True, 'rfid_data': rfid_tag, 'student': {'name': student.name, 'id': student.rfid}})
+            return render(request, 'home.html', {'student': student})
         except studentUser.DoesNotExist:
             pass
 
-    return render(request, 'home.html')
+    return render(request, 'home.html', {'student': student})
 
 
 def register_student(request):
@@ -103,7 +106,6 @@ def borrow_item(request):
         BorrowRecord.objects.create(user=student, item=item)
         #end user session
 
-        
         return redirect('home')
     
     return render(request, 'borrow_item.html')
@@ -122,6 +124,6 @@ def student_items(request):
             item_to_return.save()
             # You can add additional logic here if needed
 
-            return redirect('student_items')
+            return redirect('home')
 
     return render(request, 'student_items.html', {'borrowed_items': borrowed_items})

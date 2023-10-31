@@ -3,60 +3,95 @@
   <head>
     <title>Register Student</title>
     <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        font-size: 1.2em;
-        text-align: center;
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        flex-direction: column;
-      }
-      
-      form {
-        max-width: 400px;
-        width: 100%;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-      
-      h1 {
-        margin-bottom: 20px;
-        color: #333;
-      }
-      
-      label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-        color: #555;
-      }
-      
-      input {
-        width: calc(100% - 20px);
-        padding: 10px;
-        margin-bottom: 15px;
-        font-size: 1em;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-      
-      input[type="submit"] {
-        background-color: #4caf50;
-        color: #fff;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-      
-      input[type="submit"]:hover {
-        background-color: #45a049;
-      }
-      
+            body {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100vh;
+              font-size: 1.2em;
+              text-align: center;
+              font-family: Arial, sans-serif;
+              background-color: #f4f4f4;
+              margin: 0;
+              flex-direction: column;
+            }
+
+            form {
+              max-width: 400px;
+              width: 100%;
+              background-color: #fff;
+              padding: 20px;
+              border-radius: 10px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            h1 {
+              margin-bottom: 20px;
+              color: #333;
+            }
+
+            label {
+              display: block;
+              margin-bottom: 5px;
+              font-weight: bold;
+              color: #555;
+            }
+
+            input {
+              width: calc(100% - 20px);
+              padding: 10px;
+              margin-bottom: 15px;
+              font-size: 1em;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+      {% comment %}
+            input[type="submit"] {
+              background-color: #4caf50;
+              color: #fff;
+              cursor: pointer;
+              transition: background-color 0.3s;
+            }
+
+            input[type="submit"]:hover {
+              background-color: black;
+            } {% endcomment %}
+
+            input[type="submit"] {
+              align-items: center;
+              {% comment %} background-color: #fff; {% endcomment %}
+              border-radius: 12px;
+              box-shadow: transparent 0 0 0 3px, rgba(18, 18, 18, 0.1) 0 6px 20px;
+              box-sizing: border-box;
+              {% comment %} color: #121212; {% endcomment %}
+              color: white;
+              background-color: black;
+              cursor: pointer;
+              display: inline-flex;
+              flex: 1 1 auto;
+              font-family: Inter, sans-serif;
+              font-size: 1.2rem;
+              font-weight: 700;
+              justify-content: center;
+              line-height: 1;
+              margin: 0;
+              outline: none;
+              padding: 1rem 1.2rem;
+              text-align: center;
+              text-decoration: none;
+              transition: box-shadow 0.2s, -webkit-box-shadow 0.2s;
+              white-space: nowrap;
+              border: 0;
+              user-select: none;
+              -webkit-user-select: none;
+              touch-action: manipulation;
+            }
+
+            input[type="submit"]:hover {
+              color:black;
+              background-color: white;
+              box-shadow: #121212 0 0 0 3px, transparent 0 0 0 0;
+            }
     </style>
   </head>
   <body>
@@ -64,9 +99,19 @@
     <form method="post">
       {% csrf_token %}
       <label for="name">Name:</label>
-      <input type="text" name="name" placeholder="Type in your name" required /><br />
+      <input
+        type="text"
+        name="name"
+        placeholder="Type in your name"
+        required
+      /><br />
       <label for="roll_number">Roll Number:</label>
-      <input type="text" name="roll_number" placeholder="Type in your roll number" required /><br />
+      <input
+        type="text"
+        name="roll_number"
+        placeholder="Type in your roll number"
+        required
+      /><br />
       <input type="submit" value="Register" />
     </form>
   </body>

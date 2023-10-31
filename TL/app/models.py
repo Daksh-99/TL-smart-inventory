@@ -24,4 +24,4 @@ class BorrowRecord(models.Model):
     returned = models.BooleanField(default=False) 
 
     def __str__(self):
-        return self.item
+        return self.item.name + ' - ' + self.user.name

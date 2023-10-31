@@ -5,86 +5,94 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // Get a reference to the input field
-        const rfidInput = document.getElementById("rfid_tag");
-
-        // Set focus on the input field
-        rfidInput.focus();
-      });
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const rfidInput = document.getElementById("rfid_tag");
         const rfidForm = document.getElementById("rfid_form");
+        const rfidInput = document.getElementById("rfid_tag");
 
-        rfidInput.addEventListener("input", function () {
-          if (rfidInput.value.length === 10) {
-            rfidForm.submit();
+        // Create a hidden input field to capture the RFID tag
+        const hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = "rfid_tag";
+
+        // Initialize an array to store the RFID digits
+        const rfidDigits = [];
+
+        // Set focus on the hidden input field
+        hiddenInput.focus();
+        console.log("step 1");
+        // Append the hidden input field to the form
+        rfidForm.appendChild(hiddenInput);
+        console.log("step 2");
+
+        // Event listener to capture keystrokes
+        document.addEventListener("keydown", function (event) {
+          const key = event.key;
+          console.log("step 3");
+          // Ensure the key is a digit and not exceeding 10 digits
+          if (/\d/.test(key) && rfidDigits.length < 10) {
+            rfidDigits.push(key);
+          }
+
+          // Update the hidden input field's value
+          hiddenInput.value = rfidDigits.join("");
+
+          // If 10 digits are completed, submit the form
+          if (rfidDigits.length === 10) {
+            const tickSymbol = document.getElementById("tick");
+            tickSymbol.style.display = "inline"; // Show the tick symbol
+            setTimeout(function () {
+              rfidForm.submit(); // Submit the form
+            }, 1000);
           }
         });
       });
     </script>
     <style>
-        body {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 100vh;
-          font-family: Arial, sans-serif;
-          background-color: #f4f4f4;
-          margin: 0;
-          flex-direction: column
-        }
-        
-        h1 {
-          font-size: 2em;
-          text-align: center;
-        }
-        
-        #rfid_form {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          background-color: #fff;
-          border-radius: 10px;
-          padding: 20px;
-          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-          max-width: 400px;
-        }
-        
-        p {
-          font-size: 1.2em;
-          margin-bottom: 2em;
-        }
-        
-        input {
-          width: 100%;
-          padding: 10px;
-          font-size: 1.2em;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          outline: none;
-          box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-          margin-bottom: 1.5vh;
-        }
-        
-        input::placeholder {
-          font-size: 1em;
-          color: #aaa;
-        }
-        
+      body {
+        display: flex;
+        align-items: center;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        flex-direction: column;
+      }
+
+      h1 {
+        font-size: 2em;
+        text-align: center;
+      }
+
+      #rfid_form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+      }
+
+      p {
+        font-size: 1.2em;
+        margin-bottom: 2em;
+        font-weight: bold;
+      }
+
+      .tick-symbol {
+        display: none;
+        color: green;
+        font-size: 2em;
+        margin-top: 20px;
+      }
     </style>
   </head>
   <body>
     <h1>RFID Scanner</h1>
     <form id="rfid_form" action="{% url 'process_rfid_tag' %}" method="post">
-      {%csrf_token%}
-      <p>Enter your RFID tag (10 digits):</p>
-      <input
-        type="text"
-        name="rfid_tag"
-        id="rfid_tag"
-        placeholder="Enter RFID Tag"
-        maxlength="10"
-      />
+      {% csrf_token %}
+      <p>Waiting for ID Scan</p>
+      <div class="tick-symbol" id="tick">&#10004;</div>
     </form>
   </body>
 </html>
