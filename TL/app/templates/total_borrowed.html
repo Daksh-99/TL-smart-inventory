@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Total Borrowed Items</title>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        font-weight: bold;
+        font-style: normal;
+        background-color: #fff;
+        margin: 0;
+        padding: 0;
+      }
+
+      nav {
+        background-color: #000;
+        color: white;
+        margin: 0;
+        text-align: center;
+        height: 10vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      h1 {
+        background-color: #000;
+        color: white;
+        margin: 0;
+        text-align: center;
+      }
+
+      ul {
+        list-style-type: none;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+      }
+
+      li {
+        background-color: #fff;
+        margin: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        width: 60em;
+      }
+
+      .item {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+      }
+
+      .name,
+      .quantity {
+        text-align: center;
+        align-items: center;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      .buttons {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .edit,
+      .save {
+        font-weight: bold;
+        background-color: #000;
+        color: white;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        margin: 5px;
+        padding: 15px;
+        width: 100px;
+      }
+
+      .save {
+        background-color: #28a745; /* Green color for the Save button */
+        display: none; /* Hide the Save button by default */
+      }
+
+      input {
+        text-align: center;
+        padding: 5px;
+        width: 60%;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+      }
+
+      .button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+      }
+
+      .button-19 {
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        width: 20vw;
+        align-items: center;
+        border-radius: 12px;
+        box-shadow: transparent 0 0 0 3px, rgba(18, 18, 18, 0.1) 0 6px 20px;
+        box-sizing: border-box;
+        color: white;
+        background-color: black;
+        cursor: pointer;
+        font-family: Inter, sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        line-height: 1;
+        outline: none;
+        padding: 1rem 1rem;
+        text-decoration: none;
+        transition: box-shadow 0.2s, -webkit-box-shadow 0.2s;
+        border: 0;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+      }
+
+      .button-19:hover {
+        color: black;
+        background-color: white;
+        box-shadow: #121212 0 0 0 3px, transparent 0 0 0 0;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .button-18 {
+        position: absolute;
+        left: 1em;
+        appearance: button;
+        background-color: grey;
+        border: solid transparent;
+        border-radius: 16px;
+        border-width: 0 0 4px;
+        box-sizing: border-box;
+        color: black;
+        cursor: pointer;
+        display: inline-block;
+        font-family: din-round, sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        line-height: 20px;
+        margin: 0;
+        outline: none;
+        overflow: visible;
+        padding: 13px 16px;
+        text-align: center;
+        text-transform: uppercase;
+        touch-action: manipulation;
+        transform: translateZ(0);
+        transition: filter 0.2s;
+        user-select: none;
+        -webkit-user-select: none;
+        vertical-align: middle;
+        white-space: nowrap;
+        width: 9%;
+        height: 8%;
+      }
+
+      .button-18:after {
+        background-clip: padding-box;
+        background-color: white;
+        border: solid transparent;
+        border-radius: 16px;
+        border-width: 0 0 4px;
+        bottom: -4px;
+        content: "";
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: -1;
+      }
+
+      .button-18:main,
+      .button-18:focus {
+        user-select: auto;
+      }
+
+      .button-18:hover:not(:disabled) {
+        filter: brightness(1.1);
+        -webkit-filter: brightness(1.1);
+      }
+
+      .button-18:disabled {
+        cursor: auto;
+      }
+
+      .button-18:active {
+        border-width: 4px 0 0;
+        background: none;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+    <script>
+      function toggleReturnedItems() {
+        var returnedItems = document.getElementById("returned-items");
+        returnedItems.classList.toggle("hidden");
+        var button = document.getElementsByClassName("button-19")[0];
+        if (returnedItems.classList.contains("hidden")) {
+          button.innerHTML = "Show Returned Items";
+        } else {
+          button.innerHTML = "Hide Returned Items";
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <nav>
+      <a href="{%url 'itemlist'%}" class="button-18">All Items</a>
+      <h1>All Borrowed Items</h1>
+    </nav>
+
+    <ul>
+      {% for borrowed_item in borrowed_items %}
+      <li>
+        <div class="item">
+          <div class="name">{{ borrowed_item.item.name }}</div>
+          <div class="user">
+            {{ borrowed_item.user.name }} - {{borrowed_item.user.roll_number}}
+          </div>
+          <div class="date">{{ borrowed_item.borrowed_at }}</div>
+          <div class="buttons"></div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    <div class="button">
+      <button class="button-19" onclick="toggleReturnedItems()">
+        Show Returned Items
+      </button>
+    </div>
+
+    <div id="returned-items" class="hidden">
+      <h2>Returned Items</h2>
+      <ul>
+        {% for returned_item in returned_items %}
+        <li>
+          <div class="item">
+            <div class="name">{{ returned_item.item.name }}</div>
+            <div class="quantity">
+              {{ returned_item.user.name }} - {{returned_item.user.roll_number}}
+            </div>
+            <div class="date">
+              {{returned_item.borrowed_at}} - {{ returned_item.returned_at }}
+            </div>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>

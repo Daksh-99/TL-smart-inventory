@@ -22,6 +22,7 @@ class BorrowRecord(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     borrowed_at = models.DateTimeField(auto_now_add=True, editable=False)
     returned = models.BooleanField(default=False) 
+    returned_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.item.name + ' - ' + self.user.name

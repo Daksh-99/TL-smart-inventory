@@ -106,7 +106,7 @@
 
       .button-19 {
         position: absolute;
-        right: 10px;
+        right: 1em;
         appearance: button;
         background-color: grey;
         border: solid transparent;
@@ -175,11 +175,20 @@
         text-decoration: none;
         color: black;
       }
+
+      .left {
+        position: absolute;
+        left: 1em;
+        width: 14.5vw;
+      }
     </style>
   </head>
   <body>
     <nav>
-      <h1>Available Items</h1>
+      <a href="{%url 'total_borrowed'%}" class="button-19 left">
+        Total Borrowed
+      </a>
+      <h1>All Items</h1>
       <a href="{%url 'newitem'%}" class="button-19"> Add Item </a>
     </nav>
     <form method="post">
@@ -266,6 +275,3 @@
     </script>
   </body>
 </html>
-
-<!-- HTML !-->
-<button class="button-19" role="button">Button 19</button>

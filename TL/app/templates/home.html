@@ -1,81 +1,45 @@
-{% comment %} <!DOCTYPE html>
-<html>
-  <head>
-    <title>RFID Scanner</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  </head>
-  <body>
-    <h1>Welcome, <span id="student_name">{{student.name}}</span></h1>
-
-    <p>Scanned RFID Tag: <span id="rfid_tag"></span></p>
-
-    <!-- Add a button to trigger RFID scanning -->
-    <button id="startScanButton">Start RFID Scan</button>
-
-    <a href="{% url 'borrow_item' %}">Borrow Item</a><br />
-    <a href="{% url 'student_items' %}">Submit Item</a>
-
-    <script>
-      $(document).ready(function () {
-        async function scanRFID() {
-          try {
-            const port = await navigator.serial.requestPort();
-            await port.open({ baudRate: 9600 });
-
-            const reader = port.readable.getReader();
-            while (true) {
-              const { value, done } = await reader.read();
-              if (done) break;
-
-              const rfidTag = new TextDecoder().decode(value);
-              document.getElementById("rfid_tag").textContent = rfidTag;
-
-              // Perform an AJAX request to send the RFID tag to the server
-              $.ajax({
-                type: "POST",
-                url: "http://localhost:8000/", // Replace with the actual URL
-                data: { rfid_tag: rfidTag },
-                success: function (data) {
-                  if (data.success) {
-                    // RFID tag found, update the page content
-                    document.getElementById("rfid_tag").textContent = rfidTag; // Update RFID tag
-                    document.getElementById("student_name").textContent =
-                      data.student.name; // Update student name
-                  } else {
-                    // RFID tag not found, handle this case
-                    console.log("No RFID tag found");
-                  }
-                },
-                error: function () {
-                  // Handle errors here
-                  console.log("Failed to send RFID tag");
-                },
-              });
-            }
-
-            await port.close();
-          } catch (error) {
-            console.error(`Error: ${error}`);
-          }
-        }
-
-        // Call the scanRFID function when the "Start RFID Scan" button is clicked
-        document
-          .getElementById("startScanButton")
-          .addEventListener("click", function () {
-            scanRFID();
-          });
-      });
-    </script>
-  </body>
-</html>
-{% endcomment %}
-
 <!DOCTYPE html>
 <html>
   <head>
     <title>Home</title>
     <style>
+      .logout {
+        position: absolute;
+        top: 0.5em;
+        right: 0.5em;
+        align-items: center;
+        border-radius: 12px;
+        box-shadow: transparent 0 0 0 3px, rgba(18, 18, 18, 0.1) 0 6px 20px;
+        box-sizing: border-box;
+        color: white;
+        background-color: black;
+        cursor: pointer;
+        display: inline-flex;
+        flex: 1 1 auto;
+        font-family: Inter, sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        justify-content: center;
+        line-height: 1;
+        margin: 0;
+        outline: none;
+        padding: 1rem 1.2rem;
+        text-align: center;
+        text-decoration: none;
+        transition: box-shadow 0.2s, -webkit-box-shadow 0.2s;
+        white-space: nowrap;
+        border: 0;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+      }
+
+      .logout:hover {
+        color: black;
+        background-color: white;
+        box-shadow: #121212 0 0 0 3px, transparent 0 0 0 0;
+      }
+
       body {
         display: flex;
         justify-content: center;
@@ -122,6 +86,12 @@
     </style>
   </head>
   <body>
+    <button
+      class="logout"
+      onclick="location.href = '{% url 'process_rfid_tag' %}';"
+    >
+      Logout
+    </button>
     <div class="container">
       <h1>Welcome, <span id="student_name">{{student.name}}</span></h1>
 

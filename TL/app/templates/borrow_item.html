@@ -19,9 +19,12 @@
               data.forEach(function (item) {
                 if (
                   item.toLowerCase().includes(inputText.toLowerCase()) &&
-                  item != inputText
+                  item.toLowerCase() != inputText.toLowerCase()
                 ) {
                   datalist.append(`<option value="${item}">`);
+                } else if (item == inputText) {
+                  datalist.append(`<option value="${item}" selected>`);
+                  datalist.remove();
                 }
               });
             },
@@ -129,7 +132,13 @@
     <form method="post">
       {% csrf_token %}
       <label for="item_name">Item Name:</label>
-      <input list="item_names" name="item_name" id="item_name" required />
+      <input
+        list="item_names"
+        name="item_name"
+        id="item_name"
+        autocomplete="off"
+        required
+      />
       <datalist id="item_names">
         <!-- Add options dynamically using JavaScript -->
       </datalist>

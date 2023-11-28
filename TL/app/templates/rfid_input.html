@@ -18,15 +18,12 @@
 
         // Set focus on the hidden input field
         hiddenInput.focus();
-        console.log("step 1");
         // Append the hidden input field to the form
         rfidForm.appendChild(hiddenInput);
-        console.log("step 2");
 
         // Event listener to capture keystrokes
         document.addEventListener("keydown", function (event) {
           const key = event.key;
-          console.log("step 3");
           // Ensure the key is a digit and not exceeding 10 digits
           if (/\d/.test(key) && rfidDigits.length < 10) {
             rfidDigits.push(key);
